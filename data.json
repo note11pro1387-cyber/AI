@@ -1,0 +1,980 @@
+[
+  {
+    "id": "framer-motion",
+    "slug": "framer-motion",
+    "order": 1,
+    "names": {
+      "fa": "فریمِر موشن",
+      "en": "Framer Motion",
+      "aliases": ["motion", "framer", "framer-motion"],
+      "pronunciation": "/ˈfreɪ.mər ˈmoʊ.ʃən/"
+    },
+    "classification": {
+      "category": "Animation",
+      "subcategories": ["react-animation", "gestures", "layout-animation"],
+      "ecosystems": ["react"],
+      "tags": ["react", "animation", "motion", "gestures", "layout", "ui", "declarative", "spring", "variants", "drag"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "کتابخانه انیمیشن پیشرفته و اعلامی برای React با پشتیبانی از حرکات، layout animations و gestures",
+          "long": "Framer Motion یک کتابخانه انیمیشن production-ready برای React است که API ساده و قدرتمندی ارائه می‌دهد. از ویژگی‌های کلیدی آن می‌توان به انیمیشن‌های اعلامی، spring animations، layout animations خودکار، gesture support و variants اشاره کرد. این کتابخانه توسط تیم Framer ساخته شده و در پروژه‌های بزرگ مقیاس به خوبی عمل می‌کند.",
+          "elevatorPitch": "بهترین کتابخانه انیمیشن برای React — ساده، قدرتمند و production-ready"
+        },
+        "en": {
+          "short": "Production-ready declarative animation library for React with gesture, layout, and scroll animations",
+          "long": "Framer Motion is a production-ready animation library for React that provides a simple yet powerful API. Key features include declarative animations, spring physics, automatic layout animations, gesture support, and reusable variants. Built by the Framer team, it scales well for large applications.",
+          "elevatorPitch": "The best animation library for React — simple, powerful, and production-ready"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "jsx",
+          "title": { "fa": "انیمیشن ساده Fade In", "en": "Simple Fade In Animation" },
+          "code": "import { motion } from 'framer-motion';\n\nfunction App() {\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: 20 }}\n      animate={{ opacity: 1, y: 0 }}\n      transition={{ duration: 0.5, ease: 'easeOut' }}\n    >\n      <h1>Hello SYNAPSE!</h1>\n    </motion.div>\n  );\n}",
+          "description": { "fa": "یک انیمیشن ساده fade-in با جابجایی عمودی", "en": "A simple fade-in animation with vertical offset" }
+        },
+        {
+          "language": "jsx",
+          "title": { "fa": "Gesture Drag", "en": "Drag Gesture" },
+          "code": "import { motion } from 'framer-motion';\n\nfunction DraggableBox() {\n  return (\n    <motion.div\n      drag\n      dragConstraints={{ left: 0, right: 300, top: 0, bottom: 300 }}\n      whileHover={{ scale: 1.1 }}\n      whileTap={{ scale: 0.9 }}\n      style={{\n        width: 100,\n        height: 100,\n        background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',\n        borderRadius: 16,\n        cursor: 'grab'\n      }}\n    />\n  );\n}",
+          "description": { "fa": "یک جعبه قابل کشیدن با افکت‌های hover و tap", "en": "A draggable box with hover and tap effects" }
+        }
+      ],
+      "media": {
+        "logo": "https://framer.com/images/favicons/favicon-32x32.png"
+      }
+    },
+    "metadata": {
+      "version": "11.0.0",
+      "releaseDate": "2019-04-15",
+      "license": "MIT",
+      "bundleSize": "47KB gzipped",
+      "weeklyDownloads": "2400000",
+      "githubStars": "23500",
+      "lastCommit": "2026-06-20",
+      "maintainers": ["mattgperry"],
+      "compatibility": {
+        "browsers": ["Chrome 90+", "Firefox 88+", "Safari 14+", "Edge 90+"],
+        "frameworks": ["React 18+"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": true
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 95, "quality": 98, "maintenance": 95, "community": 90, "overall": 95 },
+      "alternatives": ["gsap", "react-spring", "animejs", "motion-one"],
+      "related": ["react", "react-dom", "tailwindcss"],
+      "commonlyUsedWith": ["react", "tailwindcss", "react-router"]
+    },
+    "analysis": {
+      "pros": ["API اعلامی و ساده", "عملکرد عالی با GPU acceleration", "پشتیبانی عالی از TypeScript", "مستندات کامل و جامعه فعال"],
+      "cons": ["حجم نسبتاً بالا برای پروژه‌های کوچک", "نیاز به یادگیری مفاهیم animation", "محدود به React"],
+      "useCases": ["انیمیشن‌های صفحه", "micro-interactions", "gesture-based interactions", "layout transitions"],
+      "antiPatterns": ["animating hundreds of elements simultaneously", "nesting too many motion components"]
+    },
+    "resources": {
+      "docs": "https://www.framer.com/motion/",
+      "github": "https://github.com/framer/motion",
+      "npm": "https://www.npmjs.com/package/framer-motion"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-10T00:00:00Z" }
+  },
+  {
+    "id": "gsap",
+    "slug": "gsap",
+    "order": 2,
+    "names": {
+      "fa": "جی‌اس‌ای‌پی",
+      "en": "GSAP",
+      "aliases": ["greensock", "gsap", "tweenmax", "tweenlite"],
+      "pronunciation": "/dʒiː sæp/"
+    },
+    "classification": {
+      "category": "Animation",
+      "subcategories": ["web-animation", "svg-animation", "canvas-animation", "scroll-animation"],
+      "ecosystems": ["vanilla", "react", "vue", "angular", "svelte"],
+      "tags": ["animation", "svg", "canvas", "webgl", "scroll", "timeline", "tween", "performance", "professional", "cross-browser"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "کتابخانه انیمیشن حرفه‌ای و استاندارد صنعتی برای وب با پشتیبانی از SVG، Canvas و WebGL",
+          "long": "GSAP (GreenSock Animation Platform) استاندارد طلایی انیمیشن‌های وب است. این کتابخانه با عملکرد فوق‌العاده بالا، API زنجیره‌ای، timeline sequencing، و پشتیبانی از تقریباً هر چیزی که در DOM قابل رندر است، انتخابی حرفه‌ای برای انیمیشن‌های پیچیده است. GSAP در برندهای بزرگ مانند Apple، Google و Nike استفاده می‌شود.",
+          "elevatorPitch": "استاندارد طلایی انیمیشن وب — حرفه‌ای، سریع، همه‌کاره"
+        },
+        "en": {
+          "short": "Industry-standard professional animation library for the web with SVG, Canvas, and WebGL support",
+          "long": "GSAP (GreenSock Animation Platform) is the gold standard for web animations. With exceptional performance, a chainable API, timeline sequencing, and support for virtually anything renderable in the DOM, it is the professional choice for complex animations. GSAP is used by major brands like Apple, Google, and Nike.",
+          "elevatorPitch": "The gold standard of web animation — professional, fast, versatile"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "javascript",
+          "title": { "fa": "انیمیشن ساده با Timeline", "en": "Simple Timeline Animation" },
+          "code": "import gsap from 'gsap';\n\nconst tl = gsap.timeline();\n\ntl.from('.box', { duration: 0.5, opacity: 0, y: 50 })\n  .to('.box', { duration: 0.3, scale: 1.2, ease: 'power2.out' })\n  .to('.box', { duration: 0.3, scale: 1, ease: 'bounce.out' });",
+          "description": { "fa": "یک تایم‌لاین ساده با سه مرحله متوالی", "en": "A simple three-step sequential timeline" }
+        }
+      ],
+      "media": {
+        "logo": "https://gsap.com/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "3.12.0",
+      "releaseDate": "2013-01-01",
+      "license": "Standard (no charge for most uses)",
+      "bundleSize": "32KB gzipped",
+      "weeklyDownloads": "1800000",
+      "githubStars": "18500",
+      "lastCommit": "2026-06-28",
+      "maintainers": ["jackdoyle", "GreenSock"],
+      "compatibility": {
+        "browsers": ["Chrome 60+", "Firefox 60+", "Safari 11+", "Edge 79+", "IE 9+"],
+        "frameworks": ["Framework-agnostic"],
+        "nodeVersions": ["N/A (client-side)"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": false,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 92, "quality": 99, "maintenance": 90, "community": 85, "overall": 92 },
+      "alternatives": ["framer-motion", "animejs", "motion-one", "lottie-web"],
+      "related": ["scrolltrigger", "flip", "motionpath"],
+      "commonlyUsedWith": ["threejs", "pixijs", "react", "vue"]
+    },
+    "analysis": {
+      "pros": ["عملکرد استثنایی", "سازگاری با تمام مرورگرها", "API بالغ و پایدار", "پلاگین‌های قدرتمند (ScrollTrigger, Flip)"],
+      "cons": ["مجوز برای برخی کاربردها محدودیت دارد", "حجم نسبتاً بالا", "نیاز به یادگیری API اختصاصی"],
+      "useCases": ["انیمیشن‌های پیچیده برند", "اسکرول انیمیشن‌ها", "بنرهای تعاملی", "بازی‌های مرورگری"],
+      "antiPatterns": ["using GSAP for simple CSS transitions", "overusing from() without clear"]
+    },
+    "resources": {
+      "docs": "https://gsap.com/docs/",
+      "github": "https://github.com/greensock/GSAP",
+      "npm": "https://www.npmjs.com/package/gsap"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z" }
+  },
+  {
+    "id": "animejs",
+    "slug": "animejs",
+    "order": 3,
+    "names": {
+      "fa": "انیمه‌جی‌اس",
+      "en": "Anime.js",
+      "aliases": ["anime", "animejs"],
+      "pronunciation": "/ˈæn.ɪ.meɪ dʒeɪ.es/"
+    },
+    "classification": {
+      "category": "Animation",
+      "subcategories": ["web-animation", "svg-animation", "css-animation"],
+      "ecosystems": ["vanilla"],
+      "tags": ["animation", "javascript", "svg", "css", "lightweight", "timeline", "stagger", "easing", "morphing"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "کتابخانه انیمیشن سبک و قدرتمند جاوااسکریپت با پشتیبانی از CSS، SVG و DOM",
+          "long": "Anime.js یک کتابخانه انیمیشن سبک اما قدرتمند است که با CSS Properties، SVG، DOM attributes و JavaScript Objects کار می‌کند. با API روان، سیستم timeline و stagger داخلی، گزینه‌ای عالی برای پروژه‌هایی است که به یک راه‌حل انیمیشن همه‌کاره و کم‌حجم نیاز دارند.",
+          "elevatorPitch": "کتابخانه انیمیشن سبک و همه‌کاره — ساده، روان، قدرتمند"
+        },
+        "en": {
+          "short": "Lightweight yet powerful JavaScript animation library with CSS, SVG, and DOM support",
+          "long": "Anime.js is a lightweight yet powerful animation library that works with CSS Properties, SVG, DOM attributes, and JavaScript Objects. With a fluid API, built-in timeline and stagger system, it is an excellent choice for projects needing a versatile, low-footprint animation solution.",
+          "elevatorPitch": "Lightweight versatile animation library — simple, fluid, powerful"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "javascript",
+          "title": { "fa": "Stagger Animation", "en": "Stagger Animation" },
+          "code": "import anime from 'animejs';\n\nanime({\n  targets: '.card',\n  translateY: [-20, 0],\n  opacity: [0, 1],\n  delay: anime.stagger(100),\n  duration: 600,\n  easing: 'easeOutExpo'\n});",
+          "description": { "fa": "انیمیشن stagger برای لیستی از کارت‌ها", "en": "Stagger animation for a list of cards" }
+        }
+      ],
+      "media": {
+        "logo": "https://animejs.com/documentation/assets/img/animejs-v3-header.jpg"
+      }
+    },
+    "metadata": {
+      "version": "3.2.2",
+      "releaseDate": "2016-06-01",
+      "license": "MIT",
+      "bundleSize": "12KB gzipped",
+      "weeklyDownloads": "800000",
+      "githubStars": "5200",
+      "lastCommit": "2025-11-15",
+      "maintainers": ["juliangarnier"],
+      "compatibility": {
+        "browsers": ["Chrome 60+", "Firefox 60+", "Safari 11+", "Edge 79+"],
+        "frameworks": ["Framework-agnostic"],
+        "nodeVersions": ["N/A (client-side)"]
+      },
+      "features": {
+        "typescript": false,
+        "treeshaking": true,
+        "ssr": false,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 82, "quality": 90, "maintenance": 70, "community": 75, "overall": 80 },
+      "alternatives": ["framer-motion", "gsap", "motion-one", "lottie-web"],
+      "related": ["svgjs", "threejs", "p5js"],
+      "commonlyUsedWith": ["svgjs", "d3", "threejs"]
+    },
+    "analysis": {
+      "pros": ["بسیار سبک (12KB)", "API روان و ساده", "پشتیبانی عالی از SVG morphing", "رایگان و متن‌باز"],
+      "cons": ["نگهداری کمتر فعال نسبت به رقبا", "محدود به مرورگر", "TypeScript support محدود"],
+      "useCases": ["انیمیشن‌های SVG", "micro-interactions", " prototyping سریع", "سایت‌های خلاقانه"],
+      "antiPatterns": ["using for complex state-driven animations"]
+    },
+    "resources": {
+      "docs": "https://animejs.com/documentation/",
+      "github": "https://github.com/juliangarnier/anime",
+      "npm": "https://www.npmjs.com/package/animejs"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-06-01T00:00:00Z" }
+  },
+  {
+    "id": "react-spring",
+    "slug": "react-spring",
+    "order": 4,
+    "names": {
+      "fa": "ری‌اکت اسپرینگ",
+      "en": "React Spring",
+      "aliases": ["react-spring", "spring"],
+      "pronunciation": "/riˈækt sprɪŋ/"
+    },
+    "classification": {
+      "category": "Animation",
+      "subcategories": ["react-animation", "physics-based", "spring-animation"],
+      "ecosystems": ["react"],
+      "tags": ["react", "animation", "physics", "spring", "hooks", "interpolation", "gesture", "declarative"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "کتابخانه انیمیشن مبتنی بر فیزیک برای React با استفاده از spring dynamics واقعی",
+          "long": "React Spring یک کتابخانه انیمیشن مبتنی بر فیزیک است که از spring dynamics برای ایجاد انیمیشن‌های طبیعی و روان استفاده می‌کند. برخلاف انیمیشن‌های مبتنی بر duration و easing، این کتابخانه رفتار فیزیکی واقعی را شبیه‌سازی می‌کند و نتیجه‌ای بسیار طبیعی‌تر تولید می‌کند. با hooks مدرن React کاملاً یکپارچه می‌شود.",
+          "elevatorPitch": "انیمیشن‌های طبیعی و مبتنی بر فیزیک برای React"
+        },
+        "en": {
+          "short": "Physics-based animation library for React using real spring dynamics",
+          "long": "React Spring is a physics-based animation library that uses spring dynamics to create natural, fluid animations. Unlike duration-and-easing-based animations, it simulates real physical behavior, producing much more natural results. It integrates seamlessly with modern React hooks.",
+          "elevatorPitch": "Natural, physics-based animations for React"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "jsx",
+          "title": { "fa": "Spring Animation با Hook", "en": "Spring Animation with Hook" },
+          "code": "import { useSpring, animated } from '@react-spring/web';\n\nfunction FadeIn() {\n  const springs = useSpring({\n    from: { opacity: 0, transform: 'translateY(20px)' },\n    to: { opacity: 1, transform: 'translateY(0px)' },\n    config: { tension: 280, friction: 60 }\n  });\n\n  return <animated.div style={springs}>Hello SYNAPSE!</animated.div>;\n}",
+          "description": { "fa": "استفاده از useSpring برای انیمیشن fade-in", "en": "Using useSpring for a fade-in animation" }
+        }
+      ],
+      "media": {
+        "logo": "https://react-spring.dev/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "9.7.0",
+      "releaseDate": "2018-03-01",
+      "license": "MIT",
+      "bundleSize": "55KB gzipped",
+      "weeklyDownloads": "3100000",
+      "githubStars": "28000",
+      "lastCommit": "2026-06-15",
+      "maintainers": ["aleclarson", "joshuaellis"],
+      "compatibility": {
+        "browsers": ["Chrome 90+", "Firefox 88+", "Safari 14+", "Edge 90+"],
+        "frameworks": ["React 18+"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 93, "quality": 95, "maintenance": 90, "community": 88, "overall": 92 },
+      "alternatives": ["framer-motion", "gsap", "motion-one"],
+      "related": ["react", "react-dom", "react-three-fiber"],
+      "commonlyUsedWith": ["react", "react-dom", "react-three-fiber"]
+    },
+    "analysis": {
+      "pros": ["انیمیشن‌های بسیار طبیعی", "API مبتنی بر hooks مدرن", "ادغام عالی با React Three Fiber", "TypeScript support کامل"],
+      "cons": ["حجم بالاتر نسبت به رقبا", "منحنی یادگیری برای مفاهیم physics", "محدود به React"],
+      "useCases": ["انیمیشن‌های پیچیده UI", "3D animations با R3F", "parallax effects", "gesture-based interactions"],
+      "antiPatterns": ["mixing too many spring configurations", "not memoizing animated components"]
+    },
+    "resources": {
+      "docs": "https://www.react-spring.dev/",
+      "github": "https://github.com/pmndrs/react-spring",
+      "npm": "https://www.npmjs.com/package/@react-spring/web"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-08T00:00:00Z" }
+  },
+  {
+    "id": "redux",
+    "slug": "redux",
+    "order": 5,
+    "names": {
+      "fa": "ریداکس",
+      "en": "Redux",
+      "aliases": ["redux", "redux-toolkit", "rtk"],
+      "pronunciation": "/ˈriː.dʌks/"
+    },
+    "classification": {
+      "category": "State Management",
+      "subcategories": ["global-state", "predictable-state", "middleware"],
+      "ecosystems": ["react", "vue", "angular", "vanilla"],
+      "tags": ["state-management", "javascript", "react", "predictable", "middleware", "devtools", "redux-toolkit", "immer"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "مدیریت state قابل پیش‌بینی برای اپلیکیشن‌های جاوااسکریپت با معماری Flux-like",
+          "long": "Redux یک کانتینر state قابل پیش‌بینی برای اپلیکیشن‌های جاوااسکریپت است. با پیروی از اصول Flux، یک store مرکزی، actions و reducers خالص، به شما کمک می‌کند رفتار اپلیکیشن را در محیط‌های مختلف (client، server، native) به طور یکسان مدیریت کنید. Redux Toolkit روش مدرن و توصیه‌شده برای نوشتن منطق Redux است.",
+          "elevatorPitch": "مدیریت state قابل پیش‌بینی و مقیاس‌پذیر — استاندارد طلایی اکوسیستم React"
+        },
+        "en": {
+          "short": "Predictable state container for JavaScript apps with Flux-like architecture",
+          "long": "Redux is a predictable state container for JavaScript applications. Following Flux principles with a central store, actions, and pure reducers, it helps you manage application behavior consistently across different environments (client, server, native). Redux Toolkit is the modern, recommended way to write Redux logic.",
+          "elevatorPitch": "Predictable, scalable state management — the gold standard of the React ecosystem"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "javascript",
+          "title": { "fa": "Redux Toolkit Slice", "en": "Redux Toolkit Slice" },
+          "code": "import { createSlice, configureStore } from '@reduxjs/toolkit';\n\nconst counterSlice = createSlice({\n  name: 'counter',\n  initialState: { value: 0 },\n  reducers: {\n    increment: (state) => { state.value += 1; },\n    decrement: (state) => { state.value -= 1; }\n  }\n});\n\nexport const store = configureStore({\n  reducer: { counter: counterSlice.reducer }\n});\n\nexport const { increment, decrement } = counterSlice.actions;",
+          "description": { "fa": "یک slice ساده با Redux Toolkit", "en": "A simple slice using Redux Toolkit" }
+        }
+      ],
+      "media": {
+        "logo": "https://redux.js.org/img/favicon/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "5.0.0",
+      "releaseDate": "2015-06-01",
+      "license": "MIT",
+      "bundleSize": "18KB gzipped",
+      "weeklyDownloads": "12000000",
+      "githubStars": "60500",
+      "lastCommit": "2026-07-01",
+      "maintainers": ["markerikson", "timdorr"],
+      "compatibility": {
+        "browsers": ["All modern browsers"],
+        "frameworks": ["React", "Vue", "Angular", "Vanilla JS"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 98, "quality": 97, "maintenance": 96, "community": 98, "overall": 97 },
+      "alternatives": ["zustand", "jotai", "mobx", "recoil"],
+      "related": ["react-redux", "redux-toolkit", "redux-saga", "redux-thunk"],
+      "commonlyUsedWith": ["react", "react-redux", "redux-toolkit", "immer"]
+    },
+    "analysis": {
+      "pros": ["پیش‌بینی‌پذیری کامل state", "اکوسیستم عظیم و بالغ", "Redux DevTools قدرتمند", "پشتیبانی عالی از TypeScript"],
+      "cons": ["حجم بالای boilerplate (بدون Toolkit)", "منحنی یادگیری نسبتاً تند", "Overkill برای پروژه‌های کوچک"],
+      "useCases": ["اپلیکیشن‌های بزرگ و پیچیده", "state که بین کامپوننت‌های زیاد به اشتراک گذاشته می‌شود", "تیم‌های بزرگ با نیاز به predictability"],
+      "antiPatterns": ["putting all state in Redux", "mutating state directly"]
+    },
+    "resources": {
+      "docs": "https://redux.js.org/",
+      "github": "https://github.com/reduxjs/redux",
+      "npm": "https://www.npmjs.com/package/@reduxjs/toolkit"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-14T00:00:00Z" }
+  },
+  {
+    "id": "zustand",
+    "slug": "zustand",
+    "order": 6,
+    "names": {
+      "fa": "زوستند",
+      "en": "Zustand",
+      "aliases": ["zustand", "zustand-state"],
+      "pronunciation": "/ˈtsuːʃtand/"
+    },
+    "classification": {
+      "category": "State Management",
+      "subcategories": ["global-state", "lightweight", "hook-based"],
+      "ecosystems": ["react"],
+      "tags": ["state-management", "react", "lightweight", "hooks", "minimal", "typescript", "immer", "middleware"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "مدیریت state ساده، سبک و سریع برای React با API مبتنی بر hooks",
+          "long": "Zustand یک راه‌حل مدیریت state کوچک، سریع و مقیاس‌پذیر است که بر اساس اصول simplified flux ساخته شده است. برخلاف Redux، نیاز به provider، context، dispatch یا reducer ندارد. فقط یک hook ساده که state و actions را برمی‌گرداند. با حجم 3KB، یکی از سبک‌ترین گزینه‌ها است.",
+          "elevatorPitch": "مدیریت state فوق‌العاده سبک برای React — سادگی بدون مصالحه"
+        },
+        "en": {
+          "short": "Simple, lightweight, and fast state management for React with a hook-based API",
+          "long": "Zustand is a small, fast, and scalable state management solution built on simplified flux principles. Unlike Redux, it requires no provider, context, dispatch, or reducers. Just a simple hook that returns state and actions. At 3KB, it is one of the lightest options available.",
+          "elevatorPitch": "Ultra-lightweight state management for React — simplicity without compromise"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "javascript",
+          "title": { "fa": "فروشگاه ساده Zustand", "en": "Simple Zustand Store" },
+          "code": "import { create } from 'zustand';\n\nconst useStore = create((set) => ({\n  count: 0,\n  increment: () => set((state) => ({ count: state.count + 1 })),\n  decrement: () => set((state) => ({ count: state.count - 1 })),\n  reset: () => set({ count: 0 })\n}));\n\nfunction Counter() {\n  const { count, increment, decrement } = useStore();\n  return (\n    <div>\n      <span>{count}</span>\n      <button onClick={increment}>+</button>\n      <button onClick={decrement}>-</button>\n    </div>\n  );\n}",
+          "description": { "fa": "یک فروشگاه Zustand با شمارنده ساده", "en": "A simple Zustand store with a counter" }
+        }
+      ],
+      "media": {
+        "logo": "https://zustand-demo.pmnd.rs/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "4.5.0",
+      "releaseDate": "2019-04-01",
+      "license": "MIT",
+      "bundleSize": "3KB gzipped",
+      "weeklyDownloads": "4200000",
+      "githubStars": "42000",
+      "lastCommit": "2026-06-25",
+      "maintainers": ["dai-shi", "barelyhuman"],
+      "compatibility": {
+        "browsers": ["Chrome 80+", "Firefox 80+", "Safari 13+", "Edge 80+"],
+        "frameworks": ["React 18+"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 95, "quality": 96, "maintenance": 95, "community": 93, "overall": 95 },
+      "alternatives": ["redux", "jotai", "recoil", "mobx"],
+      "related": ["react", "immer", "zustand-middleware"],
+      "commonlyUsedWith": ["react", "immer", "react-query"]
+    },
+    "analysis": {
+      "pros": ["فوق‌العاده سبک (3KB)", "API بسیار ساده و مینیمال", "بدون نیاز به Provider", "TypeScript support عالی"],
+      "cons": ["جامعه کوچک‌تر از Redux", "مناسب نبودن برای state بسیار پیچیده", "مستندات محدودتر"],
+      "useCases": ["پروژه‌های کوچک تا متوسط", "جایگزین Redux در پروژه‌های جدید", "state ساده global"],
+      "antiPatterns": ["creating too many small stores", "using for complex derived state"]
+    },
+    "resources": {
+      "docs": "https://docs.pmnd.rs/zustand",
+      "github": "https://github.com/pmndrs/zustand",
+      "npm": "https://www.npmjs.com/package/zustand"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-11T00:00:00Z" }
+  },
+  {
+    "id": "jotai",
+    "slug": "jotai",
+    "order": 7,
+    "names": {
+      "fa": "جوتای",
+      "en": "Jotai",
+      "aliases": ["jotai", "jotai-state"],
+      "pronunciation": "/ˈdʒoʊ.taɪ/"
+    },
+    "classification": {
+      "category": "State Management",
+      "subcategories": ["atomic-state", "react-state", "primitive-state"],
+      "ecosystems": ["react"],
+      "tags": ["state-management", "react", "atomic", "minimal", "typescript", "suspense", "derived", "async"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "مدیریت state اتمی برای React — رویکرد bottom-up با API minimal",
+          "long": "Jotai یک کتابخانه مدیریت state اتمی برای React است که رویکرد bottom-up را به state management می‌آورد. شما اتم‌های (atoms) مستقل می‌سازید و کامپوننت‌ها فقط به اتم‌هایی که نیاز دارند subscribe می‌شوند. این باعث رندر مجدد بهینه و انعطاف‌پذیری بالا می‌شود. از React Suspense و async atoms پشتیبانی می‌کند.",
+          "elevatorPitch": "مدیریت state اتمی برای React — کامپوننت‌ها فقط آنچه نیاز دارند رندر می‌شوند"
+        },
+        "en": {
+          "short": "Atomic state management for React — bottom-up approach with a minimal API",
+          "long": "Jotai is an atomic state management library for React that brings a bottom-up approach to state management. You create independent atoms, and components subscribe only to the atoms they need. This results in optimal re-rendering and high flexibility. It supports React Suspense and async atoms.",
+          "elevatorPitch": "Atomic state management for React — components render only what they need"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "jsx",
+          "title": { "fa": "اتم ساده Jotai", "en": "Simple Jotai Atom" },
+          "code": "import { atom, useAtom } from 'jotai';\n\nconst countAtom = atom(0);\nconst doubledAtom = atom((get) => get(countAtom) * 2);\n\nfunction Counter() {\n  const [count, setCount] = useAtom(countAtom);\n  const [doubled] = useAtom(doubledAtom);\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <p>Doubled: {doubled}</p>\n      <button onClick={() => setCount((c) => c + 1)}>+1</button>\n    </div>\n  );\n}",
+          "description": { "fa": "اتم شمارنده با derived atom", "en": "Counter atom with a derived atom" }
+        }
+      ],
+      "media": {
+        "logo": "https://jotai.org/favicon.svg"
+      }
+    },
+    "metadata": {
+      "version": "2.8.0",
+      "releaseDate": "2020-11-01",
+      "license": "MIT",
+      "bundleSize": "4KB gzipped",
+      "weeklyDownloads": "1900000",
+      "githubStars": "17800",
+      "lastCommit": "2026-07-03",
+      "maintainers": ["dai-shi"],
+      "compatibility": {
+        "browsers": ["Chrome 80+", "Firefox 80+", "Safari 13+", "Edge 80+"],
+        "frameworks": ["React 18+"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 90, "quality": 94, "maintenance": 92, "community": 85, "overall": 90 },
+      "alternatives": ["zustand", "recoil", "redux", "nanostores"],
+      "related": ["react", "jotai-utils", "jotai-tanstack-query"],
+      "commonlyUsedWith": ["react", "react-query", "immer"]
+    },
+    "analysis": {
+      "pros": ["رندر مجدد بهینه (فقط subscribed components)", "پشتیبانی عالی از async و Suspense", "API بسیار minimal", "انعطاف‌پذیری بالا"],
+      "cons": ["ممکن است برای state ساده overkill باشد", "جامعه کوچک‌تر", "مستندات کمتر از Redux"],
+      "useCases": ["state پیچیده با وابستگی‌های زیاد", "async state management", "پروژه‌هایی که نیاز به granular reactivity دارند"],
+      "antiPatterns": ["creating an atom for every single piece of state", "deeply nested derived atoms"]
+    },
+    "resources": {
+      "docs": "https://jotai.org/",
+      "github": "https://github.com/pmndrs/jotai",
+      "npm": "https://www.npmjs.com/package/jotai"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-09T00:00:00Z" }
+  },
+  {
+    "id": "react-query",
+    "slug": "react-query",
+    "order": 8,
+    "names": {
+      "fa": "تَن‌استک کوئری",
+      "en": "TanStack Query",
+      "aliases": ["react-query", "tanstack-query", "tanstack"],
+      "pronunciation": "/tæn.stæk ˈkwɪəri/"
+    },
+    "classification": {
+      "category": "Data Fetching",
+      "subcategories": ["server-state", "caching", "data-synchronization"],
+      "ecosystems": ["react", "vue", "solid", "svelte"],
+      "tags": ["data-fetching", "react", "caching", "server-state", "typescript", "devtools", "mutation", "invalidation"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "مدیریت server state قدرتمند با caching خودکار، synchronization و background updates",
+          "long": "TanStack Query (قبلاً React Query) مدیریت server state را متحول کرده است. به جای مدیریت دستی loading، error و caching، این کتابخانه همه چیز را به صورت خودکار انجام می‌دهد: caching هوشمند، background refetching، window focus refetching، pagination و infinite queries. نتیجه یک تجربه کاربری سریع و روان است.",
+          "elevatorPitch": "دیگر نیازی به مدیریت دستی server state نیست — caching و synchronization خودکار"
+        },
+        "en": {
+          "short": "Powerful server state management with automatic caching, synchronization, and background updates",
+          "long": "TanStack Query (formerly React Query) revolutionizes server state management. Instead of manually managing loading, error, and caching states, it handles everything automatically: smart caching, background refetching, window focus refetching, pagination, and infinite queries. The result is a fast, smooth user experience.",
+          "elevatorPitch": "No more manual server state management — automatic caching and synchronization"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "jsx",
+          "title": { "fa": "Query ساده", "en": "Simple Query" },
+          "code": "import { useQuery } from '@tanstack/react-query';\n\nfunction Todos() {\n  const { data, isLoading, error } = useQuery({\n    queryKey: ['todos'],\n    queryFn: () => fetch('/api/todos').then((res) => res.json())\n  });\n\n  if (isLoading) return <div>Loading...</div>;\n  if (error) return <div>Error: {error.message}</div>;\n\n  return (\n    <ul>\n      {data.map((todo) => (\n        <li key={todo.id}>{todo.title}</li>\n      ))}\n    </ul>\n  );\n}",
+          "description": { "fa": "fetch و cache ساده با useQuery", "en": "Simple fetch and cache with useQuery" }
+        }
+      ],
+      "media": {
+        "logo": "https://tanstack.com/favicons/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "5.50.0",
+      "releaseDate": "2019-09-01",
+      "license": "MIT",
+      "bundleSize": "12KB gzipped",
+      "weeklyDownloads": "6800000",
+      "githubStars": "40000",
+      "lastCommit": "2026-07-14",
+      "maintainers": ["tannerlinsley"],
+      "compatibility": {
+        "browsers": ["Chrome 80+", "Firefox 80+", "Safari 13+", "Edge 80+"],
+        "frameworks": ["React 18+", "Vue 3+", "Solid 1+", "Svelte 4+"],
+        "nodeVersions": ["Node 18+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 97, "quality": 98, "maintenance": 98, "community": 96, "overall": 97 },
+      "alternatives": ["swr", "apollo-client", "urql"],
+      "related": ["react", "axios", "zustand"],
+      "commonlyUsedWith": ["react", "axios", "zod", "react-router"]
+    },
+    "analysis": {
+      "pros": ["caching هوشمند و خودکار", "DevTools عالی", "پشتیبانی از فریم‌ورک‌های مختلف", "کاهش چشمگیر boilerplate"],
+      "cons": ["حجم بالاتر نسبت به fetch ساده", "منحنی یادگیری برای مفاهیم پیشرفته", "وابستگی به React (برای نسخه React)"],
+      "useCases": ["هر اپلیکیشنی که با API کار می‌کند", "لیست‌های infinite scroll", "Real-time dashboard", "data synchronization"],
+      "antiPatterns": ["using for local state", "over-fetching without proper staleTime"]
+    },
+    "resources": {
+      "docs": "https://tanstack.com/query/latest",
+      "github": "https://github.com/TanStack/query",
+      "npm": "https://www.npmjs.com/package/@tanstack/react-query"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-14T00:00:00Z" }
+  },
+  {
+    "id": "axios",
+    "slug": "axios",
+    "order": 9,
+    "names": {
+      "fa": "اکسیوس",
+      "en": "Axios",
+      "aliases": ["axios"],
+      "pronunciation": "/ˈæk.si.ɒs/"
+    },
+    "classification": {
+      "category": "Data Fetching",
+      "subcategories": ["http-client", "api-client", "request-library"],
+      "ecosystems": ["vanilla", "node", "react", "vue", "angular"],
+      "tags": ["http", "api", "javascript", "fetch", "promise", "interceptor", "xhr", "nodejs", "browser"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "کلاینت HTTP مبتنی بر Promise برای مرورگر و Node.js با API ساده و قدرتمند",
+          "long": "Axios محبوب‌ترین کلاینت HTTP برای جاوااسکریپت است که در هر دو محیط مرورگر و Node.js کار می‌کند. با پشتیبانی از Promise، interceptors برای request و response، transform data خودکار، cancellation و protection در برابر XSRF، انتخابی امن و قابل اعتماد برای ارتباط با APIها است.",
+          "elevatorPitch": "محبوب‌ترین کلاینت HTTP جاوااسکریپت — ساده، قدرتمند، همه جا حاضر"
+        },
+        "en": {
+          "short": "Promise-based HTTP client for browser and Node.js with a simple and powerful API",
+          "long": "Axios is the most popular HTTP client for JavaScript, working in both browser and Node.js environments. With Promise support, request/response interceptors, automatic data transformation, cancellation, and XSRF protection, it is a safe and reliable choice for API communication.",
+          "elevatorPitch": "The most popular JavaScript HTTP client — simple, powerful, ubiquitous"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "javascript",
+          "title": { "fa": "GET Request ساده", "en": "Simple GET Request" },
+          "code": "import axios from 'axios';\n\nasync function fetchUser(id) {\n  try {\n    const response = await axios.get(`/api/users/${id}`);\n    return response.data;\n  } catch (error) {\n    if (axios.isAxiosError(error)) {\n      console.error('Status:', error.response?.status);\n      console.error('Message:', error.message);\n    }\n    throw error;\n  }\n}",
+          "description": { "fa": "یک درخواست GET با مدیریت خطا", "en": "A GET request with error handling" }
+        }
+      ],
+      "media": {
+        "logo": "https://axios-http.com/assets/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "1.7.0",
+      "releaseDate": "2014-08-01",
+      "license": "MIT",
+      "bundleSize": "8KB gzipped",
+      "weeklyDownloads": "45000000",
+      "githubStars": "105000",
+      "lastCommit": "2026-07-10",
+      "maintainers": ["jasonsaayman", "mzabriskie"],
+      "compatibility": {
+        "browsers": ["Chrome 60+", "Firefox 60+", "Safari 11+", "Edge 79+", "IE 11"],
+        "frameworks": ["Framework-agnostic"],
+        "nodeVersions": ["Node 18+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 100, "quality": 95, "maintenance": 90, "community": 98, "overall": 96 },
+      "alternatives": ["fetch", "ky", "got", "superagent"],
+      "related": ["fetch-api", "xmlhttprequest", "promise"],
+      "commonlyUsedWith": ["react", "vue", "express", "node"]
+    },
+    "analysis": {
+      "pros": ["API بسیار ساده", "پشتیبانی از interceptors", "کار در مرورگر و Node.js", "محافظت خودکار XSRF"],
+      "cons": ["حجم بیشتر نسبت به fetch native", "بسیاری از ویژگی‌ها در fetch مدرن وجود دارد", "dependency اضافی"],
+      "useCases": ["ارتباط با REST API", "آپلود فایل", "authentication flows", "web scraping"],
+      "antiPatterns": ["creating new instance for every request", "not using interceptors for auth tokens"]
+    },
+    "resources": {
+      "docs": "https://axios-http.com/",
+      "github": "https://github.com/axios/axios",
+      "npm": "https://www.npmjs.com/package/axios"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-13T00:00:00Z" }
+  },
+  {
+    "id": "tailwindcss",
+    "slug": "tailwindcss",
+    "order": 10,
+    "names": {
+      "fa": "تیل‌ویند سی‌اس‌اس",
+      "en": "Tailwind CSS",
+      "aliases": ["tailwind", "tailwindcss", "tw"],
+      "pronunciation": "/ˈteɪl.wɪnd siː.ɛs.ɛs/"
+    },
+    "classification": {
+      "category": "CSS",
+      "subcategories": ["utility-first", "css-framework", "design-system"],
+      "ecosystems": ["vanilla", "react", "vue", "angular", "svelte"],
+      "tags": ["css", "design", "framework", "utility", "responsive", "dark-mode", "config", "jit", "optimization"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "فریم‌ورک CSS utility-first برای طراحی سریع و سفارشی رابط‌های کاربری مدرن",
+          "long": "Tailwind CSS یک فریم‌ورک CSS utility-first است که به جای کامپوننت‌های از پیش ساخته، کلاس‌های utility سطح پایین ارائه می‌دهد. این رویکرد به شما امکان می‌دهد طراحی‌های کاملاً سفارشی و unique بسازید بدون اینکه با CSS دست و پنجه نرم کنید. با JIT compiler، dark mode و responsive design کاملاً یکپارچه است.",
+          "elevatorPitch": "طراحی سریع، سفارشی و مدرن بدون ترک HTML"
+        },
+        "en": {
+          "short": "Utility-first CSS framework for rapidly building custom, modern user interfaces",
+          "long": "Tailwind CSS is a utility-first CSS framework that provides low-level utility classes instead of pre-built components. This approach lets you build completely custom, unique designs without fighting CSS. With JIT compiler, dark mode, and responsive design fully integrated.",
+          "elevatorPitch": "Rapid, custom, modern design without leaving your HTML"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "html",
+          "title": { "fa": "کارت با Tailwind", "en": "Card with Tailwind" },
+          "code": "<div class=\"max-w-sm mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden\">\n  <img class=\"w-full h-48 object-cover\" src=\"/hero.jpg\" alt=\"Hero\">\n  <div class=\"p-6\">\n    <h2 class=\"text-xl font-bold text-gray-900 dark:text-white\">Card Title</h2>\n    <p class=\"mt-2 text-gray-600 dark:text-gray-300\">Description goes here.</p>\n    <button class=\"mt-4 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors\">\n      Learn More\n    </button>\n  </div>\n</div>",
+          "description": { "fa": "یک کارت واکنش‌گرا با dark mode", "en": "A responsive card with dark mode support" }
+        }
+      ],
+      "media": {
+        "logo": "https://tailwindcss.com/favicons/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "3.4.0",
+      "releaseDate": "2017-11-01",
+      "license": "MIT",
+      "bundleSize": "36KB gzipped (with purge)",
+      "weeklyDownloads": "18000000",
+      "githubStars": "82000",
+      "lastCommit": "2026-07-12",
+      "maintainers": ["adamwathan", "reinink"],
+      "compatibility": {
+        "browsers": ["Chrome 80+", "Firefox 80+", "Safari 13+", "Edge 80+"],
+        "frameworks": ["Framework-agnostic"],
+        "nodeVersions": ["Node 16+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 100, "quality": 98, "maintenance": 99, "community": 99, "overall": 99 },
+      "alternatives": ["bootstrap", "stitches", "vanilla-extract", "unocss"],
+      "related": ["postcss", "autoprefixer", "headlessui", "tailwind-merge"],
+      "commonlyUsedWith": ["react", "nextjs", "vite", "headlessui"]
+    },
+    "analysis": {
+      "pros": ["سرعت توسعه فوق‌العاده بالا", "حجم نهایی بسیار کم (purge)", "سفارشی‌سازی کامل", "جامعه و ecosystem عظیم"],
+      "cons": ["HTML شلوغ و طولانی", "منحنی یادگیری برای توسعه‌دهندگان CSS سنتی", "نیاز به build step"],
+      "useCases": ["هر پروژه وب مدرن", "ساخت design system", "prototyping سریع", "SaaS products"],
+      "antiPatterns": ["using @apply for everything", "not purging unused CSS in production"]
+    },
+    "resources": {
+      "docs": "https://tailwindcss.com/",
+      "github": "https://github.com/tailwindlabs/tailwindcss",
+      "npm": "https://www.npmjs.com/package/tailwindcss"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-14T00:00:00Z" }
+  },
+  {
+    "id": "nextjs",
+    "slug": "nextjs",
+    "order": 11,
+    "names": {
+      "fa": "نکس‌ت‌جی‌اس",
+      "en": "Next.js",
+      "aliases": ["next", "nextjs", "next.js"],
+      "pronunciation": "/nɛkst dʒeɪ.es/"
+    },
+    "classification": {
+      "category": "Framework",
+      "subcategories": ["react-framework", "fullstack", "ssr", "ssg"],
+      "ecosystems": ["react"],
+      "tags": ["react", "framework", "ssr", "ssg", "fullstack", "routing", "api", "edge", "app-router"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "فریم‌ورک React برای توسعه full-stack با SSR، SSG، API Routes و Edge Functions",
+          "long": "Next.js فریم‌ورک React است که توسط Vercel ساخته شده و استاندارد طلایی برای توسعه اپلیکیشن‌های React محسوب می‌شود. با App Router، Server Components، API Routes، Middleware و Edge Functions، همه چیز برای ساخت یک اپلیکیشن مدرن را در اختیار شما قرار می‌دهد. SEO-friendly و performance-optimized است.",
+          "elevatorPitch": "فریم‌ورک React برای وب مدرن — full-stack، سریع، SEO-friendly"
+        },
+        "en": {
+          "short": "React framework for full-stack development with SSR, SSG, API Routes, and Edge Functions",
+          "long": "Next.js is the React framework built by Vercel and is the gold standard for React application development. With App Router, Server Components, API Routes, Middleware, and Edge Functions, it provides everything needed for a modern application. SEO-friendly and performance-optimized.",
+          "elevatorPitch": "The React framework for the modern web — full-stack, fast, SEO-friendly"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "jsx",
+          "title": { "fa": "App Router Page", "en": "App Router Page" },
+          "code": "export default async function Page() {\n  const data = await fetch('https://api.example.com/data');\n  const items = await data.json();\n\n  return (\n    <main>\n      <h1>Server Component</h1>\n      <ul>\n        {items.map((item) => (\n          <li key={item.id}>{item.name}</li>\n        ))}\n      </ul>\n    </main>\n  );\n}",
+          "description": { "fa": "یک Server Component در App Router", "en": "A Server Component in the App Router" }
+        }
+      ],
+      "media": {
+        "logo": "https://nextjs.org/favicon.ico"
+      }
+    },
+    "metadata": {
+      "version": "15.0.0",
+      "releaseDate": "2016-10-01",
+      "license": "MIT",
+      "bundleSize": "65KB gzipped (client)",
+      "weeklyDownloads": "15000000",
+      "githubStars": "125000",
+      "lastCommit": "2026-07-14",
+      "maintainers": ["timneutkens", "leerobinson"],
+      "compatibility": {
+        "browsers": ["Chrome 90+", "Firefox 88+", "Safari 14+", "Edge 90+"],
+        "frameworks": ["React 19+"],
+        "nodeVersions": ["Node 20+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": true,
+        "ssr": true,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 100, "quality": 98, "maintenance": 99, "community": 99, "overall": 99 },
+      "alternatives": ["remix", "nuxt", "sveltekit", "gatsby"],
+      "related": ["react", "vercel", "tailwindcss", "typescript"],
+      "commonlyUsedWith": ["react", "tailwindcss", "prisma", "vercel"]
+    },
+    "analysis": {
+      "pros": ["اکوسیستم کامل full-stack", "SEO و performance عالی", "App Router با Server Components", "جامعه و مستندات فوق‌العاده"],
+      "cons": ["پیچیدگی نسبتاً بالا", "وابستگی به Vercel (برای Edge)", "حجم بالای node_modules"],
+      "useCases": ["سایت‌های پر ترافیک", "e-commerce", "SaaS platforms", "وبلاگ و content sites"],
+      "antiPatterns": ["using 'use client' everywhere", "not leveraging Server Components"]
+    },
+    "resources": {
+      "docs": "https://nextjs.org/docs",
+      "github": "https://github.com/vercel/next.js",
+      "npm": "https://www.npmjs.com/package/next"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-15T00:00:00Z" }
+  },
+  {
+    "id": "typescript",
+    "slug": "typescript",
+    "order": 12,
+    "names": {
+      "fa": "تایپ‌اسکریپت",
+      "en": "TypeScript",
+      "aliases": ["ts", "typescript"],
+      "pronunciation": "/ˈtaɪp.skrɪpt/"
+    },
+    "classification": {
+      "category": "Language",
+      "subcategories": ["typed-javascript", "superset", "compiler"],
+      "ecosystems": ["vanilla", "react", "vue", "angular", "node"],
+      "tags": ["javascript", "types", "compiler", "static-typing", "superset", "tooling", "intellisense", "safety"]
+    },
+    "content": {
+      "descriptions": {
+        "fa": {
+          "short": "زبان برنامه‌نویسی با type system استاتیک که به جاوااسکریپت کامپایل می‌شود",
+          "long": "TypeScript یک superset تایپ‌شده از جاوااسکریپت است که type safety را به پروژه‌های شما اضافه می‌کند. با تشخیص خطاها در زمان کامپایل به جای runtime، ابزارهای توسعه قدرتمند (IntelliSense، autocompletion) و پشتیبانی از آخرین ویژگی‌های ECMAScript، TypeScript استاندارد صنعتی برای توسعه جاوااسکریپت مدرن شده است.",
+          "elevatorPitch": "جاوااسکریپت با type safety — خطاها را قبل از اجرا بگیرید"
+        },
+        "en": {
+          "short": "Programming language with a static type system that compiles to JavaScript",
+          "long": "TypeScript is a typed superset of JavaScript that adds type safety to your projects. By catching errors at compile time rather than runtime, providing powerful developer tooling (IntelliSense, autocompletion), and supporting the latest ECMAScript features, TypeScript has become the industry standard for modern JavaScript development.",
+          "elevatorPitch": "JavaScript with type safety — catch errors before they run"
+        }
+      },
+      "codeExamples": [
+        {
+          "language": "typescript",
+          "title": { "fa": "Type Safety مثال", "en": "Type Safety Example" },
+          "code": "interface User {\n  id: number;\n  name: string;\n  email: string;\n  isActive: boolean;\n}\n\nfunction getUser(id: number): Promise<User> {\n  return fetch(`/api/users/${id}`).then((res) => res.json());\n}\n\nasync function displayUser(userId: number) {\n  const user = await getUser(userId);\n  console.log(user.name.toUpperCase());\n}",
+          "description": { "fa": "تعریف interface و استفاده از type-safe function", "en": "Defining an interface and using a type-safe function" }
+        }
+      ],
+      "media": {
+        "logo": "https://www.typescriptlang.org/favicon-32x32.png"
+      }
+    },
+    "metadata": {
+      "version": "5.5.0",
+      "releaseDate": "2012-10-01",
+      "license": "Apache-2.0",
+      "bundleSize": "N/A (dev dependency)",
+      "weeklyDownloads": "50000000",
+      "githubStars": "100000",
+      "lastCommit": "2026-07-14",
+      "maintainers": ["Microsoft"],
+      "compatibility": {
+        "browsers": ["N/A (compiles to JS)"],
+        "frameworks": ["All"],
+        "nodeVersions": ["Node 18+"]
+      },
+      "features": {
+        "typescript": true,
+        "treeshaking": false,
+        "ssr": false,
+        "accessibility": false
+      }
+    },
+    "intelligence": {
+      "metrics": { "popularity": 100, "quality": 99, "maintenance": 99, "community": 99, "overall": 99 },
+      "alternatives": ["javascript", "flow", "rescript", "elm"],
+      "related": ["javascript", "nodejs", "deno"],
+      "commonlyUsedWith": ["react", "nextjs", "nodejs", "vite"]
+    },
+    "analysis": {
+      "pros": ["کاهش چشمگیر باگ‌های runtime", "تجربه توسعه عالی با IntelliSense", "مستندات خودکار با types", "پشتیبانی کامل از JS ecosystem"],
+      "cons": ["زمان راه‌اندازی اولیه", "منحنی یادگیری برای type system پیشرفته", "compilation overhead"],
+      "useCases": ["هر پروژه جاوااسکریپت", "پروژه‌های تیمی", "کتابخانه‌های عمومی", "پروژه‌های بزرگ و بلندمدت"],
+      "antiPatterns": ["using 'any' everywhere", "over-engineering types"]
+    },
+    "resources": {
+      "docs": "https://www.typescriptlang.org/docs/",
+      "github": "https://github.com/microsoft/TypeScript",
+      "npm": "https://www.npmjs.com/package/typescript"
+    },
+    "temporal": { "createdAt": "2024-01-15T00:00:00Z", "updatedAt": "2026-07-15T00:00:00Z" }
+  }
+]

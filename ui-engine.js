@@ -7,12 +7,16 @@ export class UIEngine {
       query: '',
       results: [],
       isThinking: false,
+      isStreaming: false,
+      streamingQueue: [],
+      streamingTimer: null,
       autocomplete: [],
       showAutocomplete: false,
       selectedAutocompleteIndex: -1,
       currentConversation: null,
       conversations: [],
       currentRoute: 'chat',
+      chatMode: 'start',
       preferences: createDefaultPreferences(),
       commandPaletteOpen: false,
       commandPaletteQuery: '',
@@ -25,15 +29,16 @@ export class UIEngine {
       tourStep: 0,
       devtoolsOpen: false,
       suggestionsRemaining: CONFIG.MAX_SUGGESTIONS_PER_DAY,
-      stats: { totalLibraries: 0, totalSearches: 0, categories: {} }
+      stats: { totalLibraries: 0, totalSearches: 0, categories: {} },
+      shouldAutoScroll: true
     };
     this.eventHandlers = {};
     this._autocompleteTimer = null;
     this._mouseDownOnAutocomplete = false;
-    this._renderedMessages = new Map();
     this._scrollContainer = null;
     this._toastIdCounter = 0;
     this._splashAnimationId = null;
+    this._heroCanvasAnimationId = null;
   }
 
   init(rootElement) {
@@ -69,18 +74,9 @@ export class UIEngine {
         return;
       }
       if (e.key === 'Escape') {
-        if (self.state.commandPaletteOpen) {
-          self.closeCommandPalette();
-          return;
-        }
-        if (self.state.modalOpen) {
-          self.closeModal();
-          return;
-        }
-        if (self.state.mobileMenuOpen) {
-          self.closeMobileMenu();
-          return;
-        }
+        if (self.state.commandPaletteOpen) { self.closeCommandPalette(); return; }
+        if (self.state.modalOpen) { self.closeModal(); return; }
+        if (self.state.mobileMenuOpen) { self.closeMobileMenu(); return; }
         if (self.state.showAutocomplete) {
           self.state.showAutocomplete = false;
           self.state.selectedAutocompleteIndex = -1;
@@ -151,36 +147,15 @@ export class UIEngine {
     }
   }
 
-  setPreferences(prefs) {
-    this.state.preferences = prefs;
-    this._applyPreferences();
-  }
-
-  getPreferences() {
-    return this.state.preferences;
-  }
-
-  updateStats(stats) {
-    this.state.stats = stats;
-    if (this.state.currentRoute === 'about') {
-      this.renderAboutPage();
-    }
-  }
-
-  updateSuggestionsRemaining(remaining) {
-    this.state.suggestionsRemaining = remaining;
-  }
-
-  setSearchEngine(engine) {
-    this.searchEngine = engine;
-  }
+  setPreferences(prefs) { this.state.preferences = prefs; this._applyPreferences(); }
+  getPreferences() { return this.state.preferences; }
+  updateStats(stats) { this.state.stats = stats; if (this.state.currentRoute === 'about') { this.renderAboutPage(); } }
+  updateSuggestionsRemaining(remaining) { this.state.suggestionsRemaining = remaining; }
+  setSearchEngine(engine) { this.searchEngine = engine; }
 
   toggleCommandPalette() {
-    if (this.state.commandPaletteOpen) {
-      this.closeCommandPalette();
-    } else {
-      this.openCommandPalette();
-    }
+    if (this.state.commandPaletteOpen) { this.closeCommandPalette(); }
+    else { this.openCommandPalette(); }
   }
 
   openCommandPalette() {
@@ -193,10 +168,7 @@ export class UIEngine {
       palette.classList.remove('hidden');
       palette.classList.add('open');
       var input = document.getElementById('command-palette-input');
-      if (input) {
-        input.value = '';
-        setTimeout(function() { input.focus(); }, 100);
-      }
+      if (input) { input.value = ''; setTimeout(function() { input.focus(); }, 100); }
       this._renderCommandPaletteResults();
     }
   }
@@ -205,10 +177,7 @@ export class UIEngine {
     this.state.commandPaletteOpen = false;
     this.state.commandPaletteQuery = '';
     var palette = document.getElementById('command-palette');
-    if (palette) {
-      palette.classList.add('hidden');
-      palette.classList.remove('open');
-    }
+    if (palette) { palette.classList.add('hidden'); palette.classList.remove('open'); }
   }
 
   _renderCommandPaletteResults() {
@@ -221,9 +190,7 @@ export class UIEngine {
       items.push({ type: 'header', label: t('command.libraries', lang) });
       if (this.searchEngine && this.searchEngine.libraries) {
         var libs = this.searchEngine.libraries.slice(0, 6);
-        for (var i = 0; i < libs.length; i++) {
-          items.push({ type: 'library', library: libs[i] });
-        }
+        for (var i = 0; i < libs.length; i++) { items.push({ type: 'library', library: libs[i] }); }
       }
       items.push({ type: 'header', label: t('command.actions', lang) });
       items.push({ type: 'action', id: 'theme_toggle', label: t('command.theme_toggle', lang), icon: '🌓' });
@@ -234,9 +201,7 @@ export class UIEngine {
     } else {
       if (this.searchEngine) {
         var searchResults = this.searchEngine.autocomplete(query, 8);
-        for (var j = 0; j < searchResults.length; j++) {
-          items.push({ type: 'library', library: searchResults[j] });
-        }
+        for (var j = 0; j < searchResults.length; j++) { items.push({ type: 'library', library: searchResults[j] }); }
       }
       items.push({ type: 'action', id: 'search_chat', label: (lang === 'fa' ? 'جستجو در چت: ' : 'Search in chat: ') + query, icon: '🔍' });
     }
@@ -272,55 +237,24 @@ export class UIEngine {
     if (!container) return;
     container.onclick = function(e) {
       var item = e.target.closest('.command-palette-item');
-      if (item) {
-        var index = parseInt(item.getAttribute('data-index'), 10);
-        if (!isNaN(index)) {
-          self._executeCommandPaletteItem(index);
-        }
-      }
+      if (item) { var index = parseInt(item.getAttribute('data-index'), 10); if (!isNaN(index)) { self._executeCommandPaletteItem(index); } }
     };
     container.onmouseover = function(e) {
       var item = e.target.closest('.command-palette-item');
-      if (item) {
-        var index = parseInt(item.getAttribute('data-index'), 10);
-        if (!isNaN(index)) {
-          self.state.commandPaletteSelected = index;
-          self._renderCommandPaletteResults();
-        }
-      }
+      if (item) { var index = parseInt(item.getAttribute('data-index'), 10); if (!isNaN(index)) { self.state.commandPaletteSelected = index; self._renderCommandPaletteResults(); } }
     };
     var input = document.getElementById('command-palette-input');
     if (input) {
-      input.oninput = function() {
-        self.state.commandPaletteQuery = input.value;
-        self.state.commandPaletteSelected = -1;
-        self._renderCommandPaletteResults();
-      };
+      input.oninput = function() { self.state.commandPaletteQuery = input.value; self.state.commandPaletteSelected = -1; self._renderCommandPaletteResults(); };
       input.onkeydown = function(e) {
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          self.state.commandPaletteSelected = Math.min(self.state.commandPaletteSelected + 1, self.state.commandPaletteResults.length - 1);
-          self._renderCommandPaletteResults();
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          self.state.commandPaletteSelected = Math.max(self.state.commandPaletteSelected - 1, -1);
-          self._renderCommandPaletteResults();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          if (self.state.commandPaletteSelected >= 0) {
-            self._executeCommandPaletteItem(self.state.commandPaletteSelected);
-          }
-        } else if (e.key === 'Escape') {
-          self.closeCommandPalette();
-        }
+        if (e.key === 'ArrowDown') { e.preventDefault(); self.state.commandPaletteSelected = Math.min(self.state.commandPaletteSelected + 1, self.state.commandPaletteResults.length - 1); self._renderCommandPaletteResults(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); self.state.commandPaletteSelected = Math.max(self.state.commandPaletteSelected - 1, -1); self._renderCommandPaletteResults(); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (self.state.commandPaletteSelected >= 0) { self._executeCommandPaletteItem(self.state.commandPaletteSelected); } }
+        else if (e.key === 'Escape') { self.closeCommandPalette(); }
       };
     }
     var overlay = document.querySelector('#command-palette .fixed.inset-0');
-    if (overlay) {
-      overlay.onclick = function() {
-        self.closeCommandPalette();
-      };
-    }
+    if (overlay) { overlay.onclick = function() { self.closeCommandPalette(); }; }
   }
 
   _executeCommandPaletteItem(index) {
@@ -328,22 +262,14 @@ export class UIEngine {
     if (index < 0 || index >= items.length) return;
     var item = items[index];
     this.closeCommandPalette();
-    if (item.type === 'library' && item.library) {
-      this._emit('library-selected', item.library);
-    } else if (item.type === 'action') {
-      if (item.id === 'theme_toggle') {
-        this._emit('toggle-theme');
-      } else if (item.id === 'lang_toggle') {
-        this._emit('toggle-language');
-      } else if (item.id === 'history') {
-        this._emit('navigate', 'history');
-      } else if (item.id === 'about') {
-        this._emit('navigate', 'about');
-      } else if (item.id === 'suggest') {
-        this.openSuggestionModal();
-      } else if (item.id === 'search_chat') {
-        this._emit('search-query', this.state.commandPaletteQuery);
-      }
+    if (item.type === 'library' && item.library) { this._emit('library-selected', item.library); }
+    else if (item.type === 'action') {
+      if (item.id === 'theme_toggle') { this._emit('toggle-theme'); }
+      else if (item.id === 'lang_toggle') { this._emit('toggle-language'); }
+      else if (item.id === 'history') { this._emit('navigate', 'history'); }
+      else if (item.id === 'about') { this._emit('navigate', 'about'); }
+      else if (item.id === 'suggest') { this.openSuggestionModal(); }
+      else if (item.id === 'search_chat') { this._emit('search-query', this.state.commandPaletteQuery); }
     }
   }
 
@@ -352,21 +278,14 @@ export class UIEngine {
     this.state.modalContent = content;
     var container = document.getElementById('modal-container');
     var contentEl = document.getElementById('modal-content');
-    if (container && contentEl) {
-      contentEl.innerHTML = content;
-      container.classList.add('open');
-      container.classList.remove('hidden');
-    }
+    if (container && contentEl) { contentEl.innerHTML = content; container.classList.add('open'); container.classList.remove('hidden'); }
   }
 
   closeModal() {
     this.state.modalOpen = false;
     this.state.modalContent = null;
     var container = document.getElementById('modal-container');
-    if (container) {
-      container.classList.remove('open');
-      container.classList.add('hidden');
-    }
+    if (container) { container.classList.remove('open'); container.classList.add('hidden'); }
   }
 
   openSuggestionModal() {
@@ -398,17 +317,10 @@ export class UIEngine {
           var url = document.getElementById('suggest-url');
           var reason = document.getElementById('suggest-reason');
           if (name && name.value.trim()) {
-            self._emit('suggestion-submitted', {
-              name: name.value.trim(),
-              url: url ? url.value.trim() : '',
-              reason: reason ? reason.value.trim() : ''
-            });
+            self._emit('suggestion-submitted', { name: name.value.trim(), url: url ? url.value.trim() : '', reason: reason ? reason.value.trim() : '' });
             self.closeModal();
           } else {
-            if (name) {
-              name.classList.add('error');
-              setTimeout(function() { name.classList.remove('error'); }, 2000);
-            }
+            if (name) { name.classList.add('error'); setTimeout(function() { name.classList.remove('error'); }, 2000); }
           }
         };
       }
@@ -444,20 +356,8 @@ export class UIEngine {
       var importBtn = document.getElementById('setting-import');
       var clearBtn = document.getElementById('setting-clear');
       var closeBtn = document.getElementById('setting-close');
-      if (themeSelect) {
-        themeSelect.onchange = function() {
-          self._emit('preferences-changed', { theme: themeSelect.value });
-          self.closeModal();
-          self.openSettingsModal();
-        };
-      }
-      if (langSelect) {
-        langSelect.onchange = function() {
-          self._emit('preferences-changed', { language: langSelect.value });
-          self.closeModal();
-          self.openSettingsModal();
-        };
-      }
+      if (themeSelect) { themeSelect.onchange = function() { self._emit('preferences-changed', { theme: themeSelect.value }); self.closeModal(); self.openSettingsModal(); }; }
+      if (langSelect) { langSelect.onchange = function() { self._emit('preferences-changed', { language: langSelect.value }); self.closeModal(); self.openSettingsModal(); }; }
       if (exportBtn) exportBtn.onclick = function() { self._emit('export-data'); self.closeModal(); };
       if (importBtn) {
         importBtn.onclick = function() {
@@ -466,22 +366,13 @@ export class UIEngine {
           input.accept = '.json';
           input.onchange = function(e) {
             var file = e.target.files[0];
-            if (file) {
-              self._emit('import-data', file);
-            }
+            if (file) { self._emit('import-data', file); }
           };
           input.click();
           self.closeModal();
         };
       }
-      if (clearBtn) {
-        clearBtn.onclick = function() {
-          if (confirm(t('settings.clear_confirm', lang))) {
-            self._emit('clear-data');
-            self.closeModal();
-          }
-        };
-      }
+      if (clearBtn) { clearBtn.onclick = function() { if (confirm(t('settings.clear_confirm', lang))) { self._emit('clear-data'); self.closeModal(); } }; }
       if (closeBtn) closeBtn.onclick = function() { self.closeModal(); };
     }, 100);
   }
@@ -499,50 +390,33 @@ export class UIEngine {
     var self = this;
     setTimeout(function() {
       toast.classList.add('removing');
-      setTimeout(function() {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 300);
+      setTimeout(function() { if (toast.parentNode) { toast.parentNode.removeChild(toast); } }, 300);
     }, duration);
   }
 
-  toggleMobileMenu() {
-    if (this.state.mobileMenuOpen) {
-      this.closeMobileMenu();
-    } else {
-      this.openMobileMenu();
-    }
-  }
-
+  toggleMobileMenu() { if (this.state.mobileMenuOpen) { this.closeMobileMenu(); } else { this.openMobileMenu(); } }
   openMobileMenu() {
     this.state.mobileMenuOpen = true;
     var menu = document.getElementById('mobile-menu');
     var overlay = document.getElementById('mobile-menu-overlay');
     if (menu) menu.classList.add('open');
-    if (overlay) overlay.classList.add('open');
+    if (overlay) { overlay.style.display = 'block'; overlay.classList.add('open'); }
   }
-
   closeMobileMenu() {
     this.state.mobileMenuOpen = false;
     var menu = document.getElementById('mobile-menu');
     var overlay = document.getElementById('mobile-menu-overlay');
     if (menu) menu.classList.remove('open');
-    if (overlay) overlay.classList.remove('open');
+    if (overlay) { overlay.classList.remove('open'); setTimeout(function() { overlay.style.display = 'none'; }, 300); }
   }
 
   navigateTo(route) {
     this.state.currentRoute = route;
     this._updateSidebarActive(route);
-    if (route === 'chat') {
-      this.renderChatPage();
-    } else if (route === 'history') {
-      this.renderHistoryPage();
-    } else if (route === 'about') {
-      this.renderAboutPage();
-    } else if (route === 'devtools') {
-      this.renderDevtoolsPage();
-    }
+    if (route === 'chat') { this.renderChatPage(); }
+    else if (route === 'history') { this.renderHistoryPage(); }
+    else if (route === 'about') { this.renderAboutPage(); }
+    else if (route === 'devtools') { this.renderDevtoolsPage(); }
     window.location.hash = '#' + route;
   }
 
@@ -551,25 +425,58 @@ export class UIEngine {
     for (var i = 0; i < navItems.length; i++) {
       var item = navItems[i];
       var itemRoute = item.getAttribute('data-route');
-      if (itemRoute === route) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
-      }
+      if (itemRoute === route) { item.classList.add('active'); }
+      else { item.classList.remove('active'); }
     }
   }
 
   renderChatPage() {
     if (!this.root) return;
     var lang = this.state.preferences.language;
+    if (this.state.chatMode === 'start') {
+      this._renderStartView();
+    } else {
+      this._renderChatView();
+    }
+  }
+
+  _renderStartView() {
+    var lang = this.state.preferences.language;
+    var html = '';
+    html += '<div class="chat-window">';
+    html += '<div class="chat-messages" id="chat-messages">';
+    html += '<div class="welcome-hero">';
+    html += '<canvas class="welcome-hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>';
+    html += '<div class="welcome-hero__logo">SYNAPSE</div>';
+    html += '<h2 class="welcome-hero__tagline">' + t('chat.welcome_title', lang) + '</h2>';
+    html += '<p class="text-secondary text-sm max-w-md mb-4">' + t('chat.welcome_text', lang).replace(/\n/g, '<br>') + '</p>';
+    html += '<div class="suggestions-grid">';
+    var suggestions = this._getDefaultSuggestions();
+    for (var i = 0; i < suggestions.length; i++) {
+      html += '<button class="welcome-hero__card" data-suggestion="' + suggestions[i].query + '">' + suggestions[i].label + '</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="chat-input-container">';
+    html += '<div id="autocomplete-dropdown" class="autocomplete-dropdown hidden"></div>';
+    html += '<div class="chat-input-wrapper">';
+    html += '<textarea id="chat-input" class="chat-input-textarea" rows="1" placeholder="' + t('chat.input_placeholder', lang) + '" data-i18n-placeholder="chat.input_placeholder"></textarea>';
+    html += '<button id="chat-send-btn" class="chat-send-btn" title="' + t('chat.send', lang) + '" disabled>';
+    html += '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    html += '</button>';
+    html += '</div></div></div>';
+    this.root.innerHTML = html;
+    this._scrollContainer = document.getElementById('chat-messages');
+    this._bindChatEvents();
+    this._renderHeroCanvas();
+  }
+
+  _renderChatView() {
+    var lang = this.state.preferences.language;
     var html = '<div class="chat-window">';
     html += '<div class="chat-messages" id="chat-messages">';
-    if (!this.state.currentConversation || this.state.currentConversation.messages.length === 0) {
-      html += '<div class="welcome-message">';
-      html += '<h2>' + t('chat.welcome_title', lang) + '</h2>';
-      html += '<p class="text-secondary whitespace-pre-wrap text-sm leading-relaxed">' + t('chat.welcome_text', lang).replace(/\n/g, '<br>') + '</p>';
-      html += '</div>';
-    } else {
+    if (this.state.currentConversation && this.state.currentConversation.messages.length > 0) {
       var messages = this.state.currentConversation.messages;
       for (var i = 0; i < messages.length; i++) {
         html += this._renderMessage(messages[i]);
@@ -583,13 +490,72 @@ export class UIEngine {
     html += '<button id="chat-send-btn" class="chat-send-btn" title="' + t('chat.send', lang) + '">';
     html += '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>';
     html += '</button>';
-    html += '</div></div></div>';
+    html += '</div></div>';
+    html += '<div class="scroll-bottom-btn" id="scroll-bottom-btn">↓</div>';
+    html += '</div>';
     this.root.innerHTML = html;
     this._scrollContainer = document.getElementById('chat-messages');
     this._bindChatEvents();
-    if (this.state.currentConversation && this.state.currentConversation.messages.length > 0) {
-      this._scrollToBottom();
+    this._bindScrollBottomButton();
+    this._scrollToBottom();
+  }
+
+  _getDefaultSuggestions() {
+    var lang = this.state.preferences.language;
+    if (lang === 'fa') {
+      return [
+        { query: 'کتابخانه انیمیشن برای React', label: '🎬 انیمیشن React' },
+        { query: 'مدیریت state در React', label: '🗂️ مدیریت State' },
+        { query: 'نمودار و چارت', label: '📊 کتابخانه نمودار' },
+        { query: 'ابزار تست', label: '🧪 ابزار تست' }
+      ];
     }
+    return [
+      { query: 'animation library for React', label: '🎬 React Animation' },
+      { query: 'state management in React', label: '🗂️ State Management' },
+      { query: 'charting library', label: '📊 Chart Library' },
+      { query: 'testing tools', label: '🧪 Testing Tools' }
+    ];
+  }
+
+  _renderHeroCanvas() {
+    var canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    canvas.width = canvas.offsetWidth || 300;
+    canvas.height = canvas.offsetHeight || 300;
+    var particles = [];
+    for (var i = 0; i < 20; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.3 + 0.1
+      });
+    }
+    var self = this;
+    function animate() {
+      if (!document.getElementById('hero-canvas')) { self._heroCanvasAnimationId = null; return; }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(139, 92, 246, ' + p.alpha + ')';
+        ctx.fill();
+      }
+      self._heroCanvasAnimationId = requestAnimationFrame(animate);
+    }
+    animate();
   }
 
   _renderMessage(message) {
@@ -692,6 +658,9 @@ export class UIEngine {
     if (input) {
       input.addEventListener('input', function() {
         self.state.query = input.value;
+        if (sendBtn) {
+          sendBtn.disabled = input.value.trim().length === 0;
+        }
         input.style.height = 'auto';
         input.style.height = Math.min(input.scrollHeight, 128) + 'px';
         clearTimeout(self._autocompleteTimer);
@@ -730,23 +699,10 @@ export class UIEngine {
           self._renderAutocomplete();
         }
       });
-
-      input.addEventListener('focus', function() {
-        if (input.value.trim().length > 0 && self.searchEngine) {
-          var suggestions = self.searchEngine.autocomplete(input.value.trim());
-          if (suggestions.length > 0) {
-            self.state.autocomplete = suggestions;
-            self.state.showAutocomplete = true;
-            self._renderAutocomplete();
-          }
-        }
-      });
     }
 
     if (sendBtn) {
-      sendBtn.addEventListener('click', function() {
-        self._sendMessage();
-      });
+      sendBtn.addEventListener('click', function() { self._sendMessage(); });
     }
 
     if (messagesContainer) {
@@ -754,17 +710,26 @@ export class UIEngine {
         var card = e.target.closest('.library-card');
         if (card) {
           var libId = card.getAttribute('data-library-id');
-          if (libId) {
-            self._emit('library-selected-by-id', libId);
-          }
+          if (libId) { self._emit('library-selected-by-id', libId); }
         }
         var copyBtn = e.target.closest('.code-block__copy');
         if (copyBtn) {
           var code = copyBtn.getAttribute('data-code');
-          if (code) {
-            self._copyToClipboard(code, copyBtn);
+          if (code) { self._copyToClipboard(code, copyBtn); }
+        }
+        var suggestionCard = e.target.closest('.welcome-hero__card');
+        if (suggestionCard) {
+          var query = suggestionCard.getAttribute('data-suggestion');
+          if (query && input) {
+            input.value = query;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            if (sendBtn) sendBtn.click();
           }
         }
+      });
+
+      messagesContainer.addEventListener('scroll', function() {
+        self._updateScrollBottomButton();
       });
     }
 
@@ -791,19 +756,34 @@ export class UIEngine {
         item.addEventListener('click', function(e) {
           e.preventDefault();
           var route = item.getAttribute('data-route');
-          if (route) {
-            self._emit('navigate', route);
-            self.closeMobileMenu();
-          }
+          if (route) { self._emit('navigate', route); self.closeMobileMenu(); }
         });
       })(navItems[i]);
     }
 
     var modalOverlay = document.querySelector('#modal-container .fixed.inset-0');
-    if (modalOverlay) {
-      modalOverlay.addEventListener('click', function() {
-        self.closeModal();
-      });
+    if (modalOverlay) { modalOverlay.addEventListener('click', function() { self.closeModal(); }); }
+  }
+
+  _bindScrollBottomButton() {
+    var self = this;
+    var btn = document.getElementById('scroll-bottom-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      self._scrollToBottom();
+    });
+  }
+
+  _updateScrollBottomButton() {
+    var container = document.getElementById('chat-messages');
+    var btn = document.getElementById('scroll-bottom-btn');
+    if (!container || !btn) return;
+    var threshold = 100;
+    var isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+    if (isNearBottom) {
+      btn.classList.remove('visible');
+    } else {
+      btn.classList.add('visible');
     }
   }
 
@@ -830,17 +810,10 @@ export class UIEngine {
     }
     dropdown.innerHTML = html;
     var self = this;
-    dropdown.onmousedown = function() {
-      self._mouseDownOnAutocomplete = true;
-    };
+    dropdown.onmousedown = function() { self._mouseDownOnAutocomplete = true; };
     dropdown.onclick = function(e) {
       var item = e.target.closest('.autocomplete-item');
-      if (item) {
-        var index = parseInt(item.getAttribute('data-index'), 10);
-        if (!isNaN(index)) {
-          self._selectAutocomplete(index);
-        }
-      }
+      if (item) { var index = parseInt(item.getAttribute('data-index'), 10); if (!isNaN(index)) { self._selectAutocomplete(index); } }
     };
   }
 
@@ -863,6 +836,11 @@ export class UIEngine {
     this.state.query = '';
     this.state.showAutocomplete = false;
     this._renderAutocomplete();
+    var sendBtn = document.getElementById('chat-send-btn');
+    if (sendBtn) sendBtn.disabled = true;
+    if (this.state.chatMode === 'start') {
+      this.state.chatMode = 'chat';
+    }
     this._emit('message-sent', text);
   }
 
@@ -871,18 +849,70 @@ export class UIEngine {
     this.state.currentConversation.messages.push(message);
     this.state.currentConversation.updatedAt = new Date().toISOString();
     if (this.state.currentRoute === 'chat') {
-      var container = document.getElementById('chat-messages');
-      if (container) {
-        var welcomeEl = container.querySelector('.welcome-message');
-        if (welcomeEl) welcomeEl.remove();
-        container.insertAdjacentHTML('beforeend', this._renderMessage(message));
-        this._scrollToBottom();
+      if (this.state.chatMode === 'chat') {
+        var container = document.getElementById('chat-messages');
+        if (container) {
+          var welcomeEl = container.querySelector('.welcome-hero');
+          if (welcomeEl) welcomeEl.remove();
+          if (this._heroCanvasAnimationId) {
+            cancelAnimationFrame(this._heroCanvasAnimationId);
+            this._heroCanvasAnimationId = null;
+          }
+          container.insertAdjacentHTML('beforeend', this._renderMessage(message));
+          this._scrollToBottom();
+        }
       }
     }
   }
 
+  streamMessage(assistantMessage) {
+    var self = this;
+    if (!this.state.currentConversation) return;
+    this.state.currentConversation.messages.push(assistantMessage);
+    this.state.currentConversation.updatedAt = new Date().toISOString();
+    if (this.state.currentRoute === 'chat' && this.state.chatMode === 'chat') {
+      var container = document.getElementById('chat-messages');
+      if (container) {
+        var tempEl = document.createElement('div');
+        tempEl.className = 'message assistant';
+        tempEl.innerHTML = '<div class="message-avatar">S</div><div class="message-bubble"><div class="whitespace-pre-wrap text-sm leading-relaxed typewriter-cursor" id="streaming-content"></div></div>';
+        container.appendChild(tempEl);
+        this._scrollToBottom();
+        var streamingEl = tempEl.querySelector('#streaming-content');
+        var fullText = this._formatMarkdown(assistantMessage.content.text);
+        var words = fullText.split(' ');
+        var index = 0;
+        this.state.isStreaming = true;
+        var timer = setInterval(function() {
+          if (index >= words.length || !self.state.isStreaming) {
+            clearInterval(timer);
+            self.state.isStreaming = false;
+            if (streamingEl) streamingEl.classList.remove('typewriter-cursor');
+            return;
+          }
+          if (streamingEl) {
+            streamingEl.innerHTML = words.slice(0, index + 1).join(' ') + (index < words.length - 1 ? ' ' : '');
+          }
+          index++;
+          self._scrollToBottom();
+        }, 30);
+        this.state.streamingTimer = timer;
+      }
+    }
+  }
+
+  stopStreaming() {
+    this.state.isStreaming = false;
+    if (this.state.streamingTimer) {
+      clearInterval(this.state.streamingTimer);
+      this.state.streamingTimer = null;
+    }
+    var streamingEl = document.getElementById('streaming-content');
+    if (streamingEl) streamingEl.classList.remove('typewriter-cursor');
+  }
+
   showThinking() {
-    if (this.state.currentRoute === 'chat') {
+    if (this.state.currentRoute === 'chat' && this.state.chatMode === 'chat') {
       var container = document.getElementById('chat-messages');
       if (container) {
         container.insertAdjacentHTML('beforeend', this._renderMessage({ role: 'assistant', content: { type: 'thinking' } }));
@@ -902,34 +932,25 @@ export class UIEngine {
     }
   }
 
-  setConversation(conversation) {
-    this.state.currentConversation = conversation;
-  }
-
-  setConversations(conversations) {
-    this.state.conversations = conversations;
-  }
+  setConversation(conversation) { this.state.currentConversation = conversation; }
+  setConversations(conversations) { this.state.conversations = conversations; }
 
   _scrollToBottom() {
     var self = this;
     requestAnimationFrame(function() {
       var container = document.getElementById('chat-messages');
-      if (container) {
-        container.scrollTop = container.scrollHeight;
-      }
+      if (container) { container.scrollTop = container.scrollHeight; }
     });
   }
 
   _copyToClipboard(text, buttonElement) {
+    var self = this;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function() {
         if (buttonElement) {
           buttonElement.textContent = '✅';
           buttonElement.classList.add('copied');
-          setTimeout(function() {
-            buttonElement.textContent = '📋';
-            buttonElement.classList.remove('copied');
-          }, 2000);
+          setTimeout(function() { buttonElement.textContent = '📋'; buttonElement.classList.remove('copied'); }, 2000);
         }
       }, function() {
         self.showToast(t('toast.clipboard_denied', self.state.preferences.language), 'error', 3000);
@@ -976,26 +997,18 @@ export class UIEngine {
         var historyItem = e.target.closest('.history-item');
         if (historyItem && !e.target.closest('.history-delete-btn')) {
           var convId = historyItem.getAttribute('data-conversation-id');
-          if (convId) {
-            self._emit('open-conversation', convId);
-          }
+          if (convId) { self._emit('open-conversation', convId); }
         }
         var deleteBtn = e.target.closest('.history-delete-btn');
         if (deleteBtn) {
           e.stopPropagation();
           var convId = deleteBtn.getAttribute('data-conversation-id');
-          if (convId && confirm(t('history.delete_confirm', lang))) {
-            self._emit('delete-conversation', convId);
-          }
+          if (convId && confirm(t('history.delete_confirm', lang))) { self._emit('delete-conversation', convId); }
         }
       });
     }
     var startChatBtn = document.getElementById('history-start-chat');
-    if (startChatBtn) {
-      startChatBtn.addEventListener('click', function() {
-        self._emit('navigate', 'chat');
-      });
-    }
+    if (startChatBtn) { startChatBtn.addEventListener('click', function() { self._emit('navigate', 'chat'); }); }
   }
 
   renderAboutPage() {
@@ -1116,37 +1129,21 @@ export class UIEngine {
   }
 
   hideSplash() {
-    if (this._splashAnimationId) {
-      cancelAnimationFrame(this._splashAnimationId);
-      this._splashAnimationId = null;
-    }
+    if (this._splashAnimationId) { cancelAnimationFrame(this._splashAnimationId); this._splashAnimationId = null; }
     var splash = document.getElementById('splash-screen');
-    if (splash) {
-      splash.classList.add('hide');
-    }
+    if (splash) { splash.classList.add('hide'); }
     var shell = document.getElementById('app-shell');
-    if (shell) {
-      shell.classList.remove('hidden');
-      requestAnimationFrame(function() {
-        shell.classList.add('visible');
-      });
-    }
+    if (shell) { shell.classList.remove('hidden'); requestAnimationFrame(function() { shell.classList.add('visible'); }); }
   }
 
   _formatDate(date, lang) {
     var now = new Date();
     var diff = now.getTime() - date.getTime();
     var dayMs = 86400000;
-    if (diff < dayMs) {
-      return t('history.today', lang);
-    } else if (diff < 2 * dayMs) {
-      return t('history.yesterday', lang);
-    } else if (diff < 7 * dayMs) {
-      return t('history.days_ago', lang, { n: String(Math.floor(diff / dayMs)) });
-    }
-    if (lang === 'fa') {
-      return date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
+    if (diff < dayMs) { return t('history.today', lang); }
+    else if (diff < 2 * dayMs) { return t('history.yesterday', lang); }
+    else if (diff < 7 * dayMs) { return t('history.days_ago', lang, { n: String(Math.floor(diff / dayMs)) }); }
+    if (lang === 'fa') { return date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }); }
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
@@ -1154,11 +1151,7 @@ export class UIEngine {
     var langBadge = document.getElementById('sidebar-lang-badge');
     if (langBadge) langBadge.textContent = lang === 'fa' ? 'FA' : 'EN';
     var themeIcon = document.getElementById('sidebar-theme-icon');
-    if (themeIcon) {
-      if (theme === 'dark') themeIcon.textContent = '🌙';
-      else if (theme === 'light') themeIcon.textContent = '☀️';
-      else themeIcon.textContent = '🌓';
-    }
+    if (themeIcon) { if (theme === 'dark') themeIcon.textContent = '🌙'; else if (theme === 'light') themeIcon.textContent = '☀️'; else themeIcon.textContent = '🌓'; }
     this._updateI18nElements();
   }
 }

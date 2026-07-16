@@ -59,6 +59,7 @@ async function loadConversation(id) {
   if (conv) {
     AppState.currentConversation = conv;
     ui.setConversation(conv);
+    ui.state.chatMode = 'chat';
     ui.navigateTo('chat');
     ui.renderChatPage();
   }
@@ -78,6 +79,7 @@ async function deleteConversation(id) {
   if (AppState.currentConversation && AppState.currentConversation.id === id) {
     AppState.currentConversation = createNewConversation();
     ui.setConversation(AppState.currentConversation);
+    ui.state.chatMode = 'start';
     ui.renderChatPage();
   }
   var allConversations = await storage.getAllConversations({ limit: 200 });
@@ -110,25 +112,33 @@ async function handleMessageSent(text) {
   ui.addMessage(userMessage);
   ui.showThinking();
   await saveCurrentConversation();
-  var delay = CONFIG.THINKING_MIN_DURATION + Math.floor(Math.random() * CONFIG.THINKING_RANDOM_EXTRA);
-  setTimeout(async function() {
-    var result = engine.search(text);
-    ui.hideThinking();
-    var response = engine.composeResponse(result.results, result.intent, AppState.preferences.language, text);
-    var assistantMessage = {
-      id: 'msg-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6),
-      conversationId: AppState.currentConversation.id,
-      role: 'assistant',
-      timestamp: new Date().toISOString(),
-      content: response
-    };
+
+  var result = engine.search(text);
+  ui.hideThinking();
+  var response = engine.composeResponse(result.results, result.intent, AppState.preferences.language, text);
+
+  var assistantMessage = {
+    id: 'msg-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6),
+    conversationId: AppState.currentConversation.id,
+    role: 'assistant',
+    timestamp: new Date().toISOString(),
+    content: response
+  };
+
+  if (response.type === 'search_results' && response.text && response.text.length > 150) {
+    AppState.currentConversation.messages.push(assistantMessage);
+    AppState.currentConversation.updatedAt = new Date().toISOString();
+    ui.streamMessage(assistantMessage);
+    await saveCurrentConversation();
+  } else {
     AppState.currentConversation.messages.push(assistantMessage);
     AppState.currentConversation.updatedAt = new Date().toISOString();
     ui.addMessage(assistantMessage);
     await saveCurrentConversation();
-    var stats = engine.getStats();
-    ui.updateStats(stats);
-  }, delay);
+  }
+
+  var stats = engine.getStats();
+  ui.updateStats(stats);
 }
 
 async function handleLibrarySelected(library) {
@@ -211,6 +221,7 @@ async function handleImportData(file) {
     ui.setConversations(allConversations);
     AppState.currentConversation = createNewConversation();
     ui.setConversation(AppState.currentConversation);
+    ui.state.chatMode = 'start';
     ui.renderChatPage();
   } else {
     ui.showToast(result.error || t('error.import_invalid', AppState.preferences.language), 'error', 4000);
@@ -223,6 +234,7 @@ async function handleClearData() {
   AppState.currentConversation = createNewConversation();
   ui.setConversations(AppState.conversations);
   ui.setConversation(AppState.currentConversation);
+  ui.state.chatMode = 'start';
   ui.renderChatPage();
   ui.showToast(t('toast.data_cleared', AppState.preferences.language), 'success', 3000);
 }
@@ -232,6 +244,11 @@ function handleNavigate(route) {
     if (!AppState.currentConversation) {
       AppState.currentConversation = createNewConversation();
       ui.setConversation(AppState.currentConversation);
+      ui.state.chatMode = 'start';
+    } else if (AppState.currentConversation.messages.length > 0) {
+      ui.state.chatMode = 'chat';
+    } else {
+      ui.state.chatMode = 'start';
     }
     ui.navigateTo('chat');
   } else if (route === 'history') {
@@ -469,8 +486,10 @@ async function init() {
   var draftConv = storage.getDraftConversation();
   if (draftConv && draftConv.messages && draftConv.messages.length > 0) {
     AppState.currentConversation = draftConv;
+    ui.state.chatMode = 'chat';
   } else {
     AppState.currentConversation = createNewConversation();
+    ui.state.chatMode = 'start';
   }
   ui.setConversation(AppState.currentConversation);
 
